@@ -4,6 +4,7 @@ package com.sauravchhabra.popularmoviesstage2.models;
 
 import android.content.Context;
 
+import com.sauravchhabra.popularmoviesstage2.MainActivity;
 import com.sauravchhabra.popularmoviesstage2.R;
 
 /**
@@ -28,5 +29,9 @@ public class Trailers {
 
     public String getName() {
         return mName;
+    }
+
+    public String getUrl() {
+        return mUrl;
     }
 }
