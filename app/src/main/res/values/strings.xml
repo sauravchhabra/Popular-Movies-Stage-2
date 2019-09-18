@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">Popular Movies Stage 2</string>
+
+    <!-- API Key here-->
+    <string name="api_key">Your API Key Here</string>
+    <string name="api_url">http://api.themoviedb.org/3/movie/</string>
+    <string name="api_poster_url">http://image.tmdb.org/t/p/w185</string>
+    <string name="image_description">Poster Image</string>
+
+    <string name="error_message">Error loading content. Please try again later</string>
+
+    <string name="sort_by">Sort By:</string>
+    <string name="settings_title">Settings</string>
+
+    <!-- Label for order-by most recent option [CHAR LIMIT=20] -->
+    <string name="settings_order_by_popular_label">Popular</string>
+    <string name="settings_order_by_popular_value" translatable="false">popular</string>
+
+    <!-- Label for order-by highest rated option [CHAR LIMIT=20] -->
+    <string name="settings_order_by_rating_label">Top Rated</string>
+    <string name="settings_order_by_rating_value" translatable="false">top_rated</string>
+
+    <!-- Strings For Sort-By Preference [CHAR LIMIT=30] -->
+    <string name="settings_order_by_label">Order By</string>
+    <string name="settings_order_by_key" translatable="false">sort</string>
+    <string name="settings_order_by_default" translatable="false">@string/settings_order_by_popular_value</string>
+
+    <string name="released_on">Released On</string>
+
+    <string name="rating">Average Rating:&#x20;</string>
+
+    <string name="plot">Overview:&#x20;</string>
+
+    <string name="default_message">Default Message</string>
+    <string name="no_connection">No connection. Please try later.</string>
+    <string-array name="settings_order_by_labels">
+        <item>@string/settings_order_by_popular_label</item>
+        <item>@string/settings_order_by_rating_label</item>
+    </string-array>
+    <string-array name="settings_order_by_values">
+        <item>@string/settings_order_by_popular_value</item>
+        <item>@string/settings_order_by_rating_value</item>
+    </string-array>
+
+    <string-array name="sort_types">
+        <item>Most Popular</item>
+        <item>Top Rated</item>
+    </string-array>
+
+</resources>
