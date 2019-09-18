@@ -20,6 +20,10 @@
     <string name="settings_order_by_rating_label">Top Rated</string>
     <string name="settings_order_by_rating_value" translatable="false">top_rated</string>
 
+    <!-- Label and Key for favourites section -->
+    <string name="settings_order_by_favourite_label">Favourites</string>
+    <string name="settings_order_by_favourites_key">favourites</string>
+
     <!-- Strings For Sort-By Preference [CHAR LIMIT=30] -->
     <string name="settings_order_by_label">Order By</string>
     <string name="settings_order_by_key" translatable="false">sort</string>
@@ -33,18 +37,8 @@
 
     <string name="default_message">Default Message</string>
     <string name="no_connection">No connection. Please try later.</string>
-    <string-array name="settings_order_by_labels">
-        <item>@string/settings_order_by_popular_label</item>
-        <item>@string/settings_order_by_rating_label</item>
-    </string-array>
-    <string-array name="settings_order_by_values">
-        <item>@string/settings_order_by_popular_value</item>
-        <item>@string/settings_order_by_rating_value</item>
-    </string-array>
 
-    <string-array name="sort_types">
-        <item>Most Popular</item>
-        <item>Top Rated</item>
-    </string-array>
+
+
 
 </resources>
