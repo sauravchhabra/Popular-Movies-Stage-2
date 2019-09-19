@@ -35,10 +35,6 @@ public class FavouriteMovies {
         return mId;
     }
 
-    public void setmId(int id) {
-        mId = id;
-    }
-
     public String getmTitle() {
         return mTitle;
     }

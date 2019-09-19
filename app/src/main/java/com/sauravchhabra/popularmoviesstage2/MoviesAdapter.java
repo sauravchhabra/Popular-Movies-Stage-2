@@ -30,17 +30,17 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
     private final String LOG_TAG = getClass().toString();
 
-    public interface ListItemClickListener{
+    public interface ListItemClickListener {
         void onListItemClicked(Movies movies);
     }
 
-    public MoviesAdapter(List<Movies> movies, ListItemClickListener listItemClickListener, Context context){
+    public MoviesAdapter(List<Movies> movies, ListItemClickListener listItemClickListener, Context context) {
         mContext = context;
         mMovies = movies;
         mItemClickListener = listItemClickListener;
     }
 
-    public void setMovieData(List<Movies> movies){
+    public void setMovieData(List<Movies> movies) {
         mMovies = movies;
         notifyDataSetChanged();
     }
@@ -81,18 +81,18 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
         @Override
         public void onClick(View v) {
-            int clickedId = v.getId();
+            int clickedId = getAdapterPosition();
             mItemClickListener.onListItemClicked(mMovies.get(clickedId));
         }
 
-        private void bind(int index){
+        private void bind(int index) {
             Movies movies = mMovies.get(index);
             imageView = itemView.findViewById(R.id.iv_poster);
             String imageUrl = NetworkUtils.buildImageUrl(movies.getImageUrl());
-            try{
+            try {
                 Picasso.get().load(imageUrl).placeholder(R.drawable.ic_launcher_foreground)
-            .error(R.mipmap.ic_launcher).into(imageView);
-            } catch (Exception e){
+                        .error(R.mipmap.ic_launcher).into(imageView);
+            } catch (Exception e) {
                 e.printStackTrace();
                 Log.e(LOG_TAG, "Error downloading/loading image");
             }

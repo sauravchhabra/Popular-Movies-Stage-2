@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Lis
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (which == 0) {
-                                mSort_by= SORT_POPULAR;
+                                mSort_by = SORT_POPULAR;
                                 editor.putString(SORT_BY, SORT_POPULAR);
                                 actionBarNameEditor.putString(ACTION_BAR_TITLE, POPULAR);
                             } else if (which == 1) {
@@ -158,9 +158,8 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Lis
 
         mFavouriteMovies = new ArrayList<>();
 
-        if (mActionBarName != null || mActionBarName.equals("")) {
-            getSupportActionBar().setTitle(mActionBarName);
-        }
+//TODO: Change the name of the Action bar dynamically
+        getSupportActionBar().setTitle(mActionBarName);
         setUpViewModel();
     }
 
@@ -218,9 +217,9 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Lis
     // Helper method to launch Detail Activity with the currently selected movie
     @Override
     public void onListItemClicked(Movies movies) {
-//        Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-//        intent.putExtra(MOVIE_KEY, movies);
-//        startActivity(intent);
+        Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+        intent.putExtra(MOVIE_KEY, movies);
+        startActivity(intent);
     }
 
     //Helper method to check if the device has an active internet connection

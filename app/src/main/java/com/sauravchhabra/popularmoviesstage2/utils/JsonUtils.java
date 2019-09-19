@@ -61,7 +61,7 @@ public class JsonUtils {
      * @param json variable will be initialized with the JSON object retrieved from the API
      * @return a list of movies
      */
-    private static ArrayList<Reviews> parseReviews(String json) {
+    public static ArrayList<Reviews> parseReviews(String json) {
         try {
             Reviews reviews;
             JSONObject jsonObject = new JSONObject(json);
@@ -94,7 +94,7 @@ public class JsonUtils {
      * @param json variable will be initialized with the JSON object retrieved from the API
      * @return a list of movies
      */
-    private static ArrayList<Trailers> parseTrailers(String json) {
+    public static ArrayList<Trailers> parseTrailers(String json) {
         try {
             Trailers trailers;
             JSONObject jsonObject = new JSONObject(json);

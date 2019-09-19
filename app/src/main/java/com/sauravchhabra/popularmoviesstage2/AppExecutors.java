@@ -20,11 +20,12 @@ public class AppExecutors {
 
     /**
      * Constructor to initialize the values of Executors
-     * @param diskIO local executor
+     *
+     * @param diskIO     local executor
      * @param mainThread local executor
-     * @param networkIO local executor
+     * @param networkIO  local executor
      */
-    private AppExecutors(Executor diskIO, Executor mainThread, Executor networkIO){
+    public AppExecutors(Executor diskIO, Executor mainThread, Executor networkIO) {
         mDiskIO = diskIO;
         mMainThread = mainThread;
         mNetworkIO = networkIO;
@@ -32,11 +33,12 @@ public class AppExecutors {
 
     /**
      * This method makes sure that only one instance of a job is running
+     *
      * @return the instance of the AppExecutor
      */
-    private static AppExecutors getInstance(){
-        if (sInstance == null){
-            synchronized (SINGLETON){
+    public static AppExecutors getInstance() {
+        if (sInstance == null) {
+            synchronized (SINGLETON) {
                 sInstance = new AppExecutors(Executors.newSingleThreadExecutor(),
                         Executors.newFixedThreadPool(3),
                         new MainThreadExecutor());
@@ -46,22 +48,22 @@ public class AppExecutors {
     }
 
     // Public getters
-    public Executor getDiskIO(){
+    public Executor getDiskIO() {
         return mDiskIO;
     }
 
-    public Executor getMainThread(){
+    public Executor getMainThread() {
         return mMainThread;
     }
 
-    public Executor getNetworkIO(){
+    public Executor getNetworkIO() {
         return mNetworkIO;
     }
 
     /**
      * Inner class to invoke the thread
      */
-    private static class MainThreadExecutor implements Executor{
+    private static class MainThreadExecutor implements Executor {
         private Handler handler = new Handler(Looper.getMainLooper());
 
         @Override

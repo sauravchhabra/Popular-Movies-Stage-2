@@ -3,6 +3,7 @@ package com.sauravchhabra.popularmoviesstage2.utils;
 
 import android.net.Uri;
 import android.util.Log;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
