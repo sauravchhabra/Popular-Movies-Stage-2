@@ -91,7 +91,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
             String imageUrl = NetworkUtils.buildImageUrl(movies.getImageUrl());
             try{
                 Picasso.get().load(imageUrl).placeholder(R.drawable.ic_launcher_foreground)
-            .error(R.mipmap.ic_launcher).centerCrop().into(imageView);
+            .error(R.mipmap.ic_launcher).into(imageView);
             } catch (Exception e){
                 e.printStackTrace();
                 Log.e(LOG_TAG, "Error downloading/loading image");

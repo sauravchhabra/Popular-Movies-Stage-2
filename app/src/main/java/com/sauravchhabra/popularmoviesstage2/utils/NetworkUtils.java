@@ -18,7 +18,7 @@ public class NetworkUtils {
     private static final String LOG_TAG = NetworkUtils.class.getName();
     private static final String API_KEY_PARAM = "api_key";
     private static final String BASE_URL = "http://api.themoviedb.org/3/movie";
-    private static final String POSTER_URL = "http://image.tmdb.org/t/p/w185";
+    private static final String POSTER_URL = "http://image.tmdb.org/t/p/w185/";
 
 
     // This method connects to the API url
@@ -27,7 +27,7 @@ public class NetworkUtils {
                 .appendEncodedPath(movieQuery)
                 .appendQueryParameter(API_KEY_PARAM, apiKey)
                 .build();
-        Log.d(LOG_TAG, "Uri build");
+        Log.d(LOG_TAG, "Uri built");
 
         URL url = null;
         try {
@@ -40,15 +40,16 @@ public class NetworkUtils {
     }
 
     // This method fetches the results from the API url
-    public static String getResponseFromUrl(URL url) throws IOException {
+    public static String getResponseFromHttpUrl(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         try {
-            InputStream inputStream = urlConnection.getInputStream();
-            Scanner scanner = new Scanner(inputStream);
+            InputStream in = urlConnection.getInputStream();
+
+            Scanner scanner = new Scanner(in);
             scanner.useDelimiter("\\A");
 
-            boolean hasMore = scanner.hasNext();
-            if (hasMore) {
+            boolean hasInput = scanner.hasNext();
+            if (hasInput) {
                 return scanner.next();
             } else {
                 return null;

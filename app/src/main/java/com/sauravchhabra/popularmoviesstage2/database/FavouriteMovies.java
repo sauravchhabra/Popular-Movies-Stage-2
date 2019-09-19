@@ -10,13 +10,13 @@ import android.arch.persistence.room.PrimaryKey;
 public class FavouriteMovies {
 
     @PrimaryKey
-    private int mId;
-    private String mTitle;
-    private String mPopularity;
-    private String mVote;
-    private String mPlot;
-    private String mImageUrl;
-    private String mReleaseData;
+    public int mId;
+    public String mTitle;
+    public String mPopularity;
+    public String mVote;
+    public String mPlot;
+    public String mImageUrl;
+    public String mReleaseDate;
 
     //Constructor to pass the information to the database
     public FavouriteMovies(int id, String title, String popularity, String vote, String plot,
@@ -27,39 +27,39 @@ public class FavouriteMovies {
         mVote = vote;
         mPlot = plot;
         mImageUrl = imageUrl;
-        mReleaseData = releaseDate;
+        mReleaseDate = releaseDate;
     }
 
     //Public getters and setters
-    public int getId() {
+    public int getmId() {
         return mId;
     }
 
-    public void setId(int id) {
+    public void setmId(int id) {
         mId = id;
     }
 
-    public String getTitle() {
+    public String getmTitle() {
         return mTitle;
     }
 
-    public String getImageUrl() {
+    public String getmImageUrl() {
         return mImageUrl;
     }
 
-    public String getPlot() {
+    public String getmPlot() {
         return mPlot;
     }
 
-    public String getPopularity() {
+    public String getmPopularity() {
         return mPopularity;
     }
 
-    public String getReleaseData() {
-        return mReleaseData;
+    public String getmReleaseDate() {
+        return mReleaseDate;
     }
 
-    public String getVote() {
+    public String getmVote() {
         return mVote;
     }
 

@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
-import android.net.Network;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
@@ -20,8 +19,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -30,14 +27,7 @@ import com.sauravchhabra.popularmoviesstage2.models.Movies;
 import com.sauravchhabra.popularmoviesstage2.utils.JsonUtils;
 import com.sauravchhabra.popularmoviesstage2.utils.NetworkUtils;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,12 +98,15 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Lis
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (which == 0) {
+                                mSort_by= SORT_POPULAR;
                                 editor.putString(SORT_BY, SORT_POPULAR);
                                 actionBarNameEditor.putString(ACTION_BAR_TITLE, POPULAR);
                             } else if (which == 1) {
+                                mSort_by = SORT_TOP_RATED;
                                 editor.putString(SORT_BY, SORT_TOP_RATED);
                                 actionBarNameEditor.putString(ACTION_BAR_TITLE, TOP_RATED);
                             } else if (which == 2) {
+                                mSort_by = SORT_FAVORITE;
                                 editor.putString(SORT_BY, SORT_FAVORITE);
                                 actionBarNameEditor.putString(ACTION_BAR_TITLE, FAVOURITES);
                             }
@@ -145,8 +138,8 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Lis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mEmptyView = findViewById(R.id.tv_error_message_display);
-        progressBar = findViewById(R.id.pb_loading_indicator);
+        mEmptyView = findViewById(R.id.tv_error_message);
+        progressBar = findViewById(R.id.pb_indicator);
         progressBar.setVisibility(View.VISIBLE);
         RecyclerView recyclerView = findViewById(R.id.main_rv);
 
@@ -188,21 +181,21 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Lis
     private void makeMovieQuery() {
         if (mSort_by.equals(SORT_FAVORITE)) {
             clearMovieList();
-            for (int i = 0; i < mMovies.size(); i++) {
+            for (int i = 0; i < mFavouriteMovies.size(); i++) {
                 Movies movies = new Movies(
-                        String.valueOf(mFavouriteMovies.get(i).getId()),
-                        mMovies.get(i).getTitle(),
-                        mMovies.get(i).getPlot(),
-                        mMovies.get(i).getVote(),
-                        mMovies.get(i).getPopularity(),
-                        mMovies.get(i).getImageUrl(),
-                        mMovies.get(i).getReleaseDate()
+                        String.valueOf(mFavouriteMovies.get(i).getmId()),
+                        mFavouriteMovies.get(i).getmTitle(),
+                        mFavouriteMovies.get(i).getmPopularity(),
+                        mFavouriteMovies.get(i).getmVote(),
+                        mFavouriteMovies.get(i).getmPlot(),
+                        mFavouriteMovies.get(i).getmImageUrl(),
+                        mFavouriteMovies.get(i).getmReleaseDate()
                 );
                 mMovies.add(movies);
             }
             mMoviesAdapter.setMovieData(mMovies);
         } else {
-            URL movieQueryUrl = NetworkUtils.buildUrl(SORT_BY, getText(R.string.api_key).toString());
+            URL movieQueryUrl = NetworkUtils.buildUrl(mSort_by, getText(R.string.api_key).toString());
             new FetchMovies().execute(movieQueryUrl);
         }
     }
@@ -225,9 +218,9 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Lis
     // Helper method to launch Detail Activity with the currently selected movie
     @Override
     public void onListItemClicked(Movies movies) {
-        Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-        intent.putExtra(MOVIE_KEY, movies);
-        startActivity(intent);
+//        Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+//        intent.putExtra(MOVIE_KEY, movies);
+//        startActivity(intent);
     }
 
     //Helper method to check if the device has an active internet connection
@@ -250,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Lis
             URL url = urls[0];
             String result = null;
             try {
-                result = NetworkUtils.getResponseFromUrl(url);
+                result = NetworkUtils.getResponseFromHttpUrl(url);
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.e(LOG_TAG, "Error getting response from URL");

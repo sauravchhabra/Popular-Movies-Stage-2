@@ -37,11 +37,12 @@ public class JsonUtils {
                 movies = new Movies(
                         currentJson.optString("id", "NA"),
                         currentJson.optString("original_title", "NA"),
-                        currentJson.optString("release_date", "NA"),
+                        currentJson.optString("overview", "NA"),
                         currentJson.optString("vote_average", "NA"),
                         currentJson.optString("popularity", "NA"),
-                        currentJson.optString("overview", "NA"),
-                        currentJson.optString("poster_path", "NA")
+                        currentJson.optString("poster_path", "NA"),
+                        currentJson.optString("release_date", "NA")
+
                 );
                 moviesArrayList.add(movies);
                 Log.d(LOG_TAG, "Movies added successfully");
