@@ -14,7 +14,6 @@ import java.util.List;
  * Class to check for any changes to the Database and update the UI accordingly
  */
 
-//TODO: Complete the implementation
 public class MainViewModel extends AndroidViewModel {
 
     private LiveData<List<FavouriteMovies>> mMovies;
