@@ -2,7 +2,7 @@
     <string name="app_name">Popular Movies Stage 2</string>
 
     <!-- API Key here-->
-    <string name="api_key">8044b444f2656305d9c58d04e4ffcb67</string>
+    <string name="api_key">Your API Key here</string>
     <string name="image_description">Poster Image</string>
     <string name="base_url_trailers">https://www.youtube.com/watch?v=</string>
 
