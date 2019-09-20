@@ -74,7 +74,7 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Traile
 
         @Override
         public void onClick(View v) {
-            int clickedId = v.getId();
+            int clickedId = getAdapterPosition();
             mItemClickListener.onListItemClicked(mTrailer.get(clickedId));
         }
 

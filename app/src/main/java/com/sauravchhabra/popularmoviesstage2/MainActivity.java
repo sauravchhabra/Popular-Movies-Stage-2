@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Lis
     private TextView mEmptyView;
     private static final String LOG_TAG = MainActivity.class.getName();
 
+    int mSelected = 0;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -83,30 +85,32 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Lis
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             final SharedPreferences.Editor editor = mSharedPreferences.edit();
             final SharedPreferences.Editor actionBarNameEditor = mSharedPreferences.edit();
-            int selected = 0;
             mSort_by = mSharedPreferences.getString(SORT_BY, SORT_POPULAR);
             if (mSort_by != null && mSort_by.equals(SORT_POPULAR))
-                selected = 0;
+                mSelected = 0;
             else if (mSort_by != null && mSort_by.equals(SORT_TOP_RATED))
-                selected = 1;
+                mSelected = 1;
             else if (mSort_by != null && mSort_by.equals(SORT_FAVORITE))
-                selected = 2;
+                mSelected = 2;
 
             builder.setTitle("Sort by:");
-            builder.setSingleChoiceItems(R.array.sort_types, selected,
+            builder.setSingleChoiceItems(R.array.sort_types, mSelected,
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (which == 0) {
                                 mSort_by = SORT_POPULAR;
+                                mActionBarName = POPULAR;
                                 editor.putString(SORT_BY, SORT_POPULAR);
                                 actionBarNameEditor.putString(ACTION_BAR_TITLE, POPULAR);
                             } else if (which == 1) {
                                 mSort_by = SORT_TOP_RATED;
+                                mActionBarName = TOP_RATED;
                                 editor.putString(SORT_BY, SORT_TOP_RATED);
                                 actionBarNameEditor.putString(ACTION_BAR_TITLE, TOP_RATED);
                             } else if (which == 2) {
                                 mSort_by = SORT_FAVORITE;
+                                mActionBarName = FAVOURITES;
                                 editor.putString(SORT_BY, SORT_FAVORITE);
                                 actionBarNameEditor.putString(ACTION_BAR_TITLE, FAVOURITES);
                             }
@@ -117,6 +121,11 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Lis
                     //If user clicked Save then apply the changes to SharedPreference
                     editor.apply();
                     actionBarNameEditor.apply();
+
+                    //Change the name of the action bar after user clicks save
+                    if (getSupportActionBar() != null) {
+                        getSupportActionBar().setTitle(mActionBarName);
+                    }
                     //After saving, refresh the activity
                     clearMovieList();
                     loadMovies();
@@ -143,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Lis
         progressBar.setVisibility(View.VISIBLE);
         RecyclerView recyclerView = findViewById(R.id.main_rv);
 
+
         //Set the recycler view to use grid layout
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -154,12 +164,20 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Lis
         // Get the saved preferences
         mSharedPreferences = getSharedPreferences("popular_movies", MODE_PRIVATE);
         mSort_by = mSharedPreferences.getString("sort_type", "popular");
-        mActionBarName = mSharedPreferences.getString("title", "Popular Movies");
+        mActionBarName = mSharedPreferences.getString(ACTION_BAR_TITLE, POPULAR);
 
         mFavouriteMovies = new ArrayList<>();
 
-//TODO: Change the name of the Action bar dynamically
-        getSupportActionBar().setTitle(mActionBarName);
+
+        //Change the name of the action bar on boot
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(mActionBarName);
+        }
+
+        if (mSelected == 2 || mActionBarName.equals(FAVOURITES)) {
+            progressBar.setVisibility(View.GONE);
+        }
+
         setUpViewModel();
     }
 

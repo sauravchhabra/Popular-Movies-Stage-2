@@ -38,7 +38,7 @@ public class DetailActivity extends AppCompatActivity
     //Final keywords
     private static final String LOG_TAG = DetailActivity.class.getName();
     private static final String REVIEWS_PARAM = "reviews";
-    private static final String TRAILERS_PARAM = "trailers";
+    private static final String TRAILERS_PARAM = "videos";
     private static final String YOUTUBE_INTENT = "vnd.youtube:";
     private static final String YOUTUBE_WEB_URL = "http://www.youtube.com/watch?v=";
 
@@ -50,7 +50,7 @@ public class DetailActivity extends AppCompatActivity
     private TrailersAdapter mTrailersAdapter;
     private MoviesDatabase mDb;
     private ImageButton mFavouriteButton;
-    private boolean mFavourite;
+    private boolean mFavourite = false;
     private TextView mErrorMessage;
     private TextView mReviewTv, mTitleTv, mRatingTv, mPlotTv, mReleasedTv;
     private ImageView mPosterIv;
@@ -92,14 +92,18 @@ public class DetailActivity extends AppCompatActivity
         Intent intent = getIntent();
         if (intent == null) {
             stopActivity(getString(R.string.no_data));
-        } else {
-            mMovies = (Movies) intent.getSerializableExtra(MainActivity.MOVIE_KEY);
-            getSupportActionBar().setTitle(mMovies.getTitle());
-            if (mMovies == null) {
-                stopActivity(getString(R.string.no_data));
-                return;
-            }
+            return;
         }
+
+        mMovies = (Movies) intent.getSerializableExtra(MainActivity.MOVIE_KEY);
+
+        if (mMovies == null) {
+            stopActivity(getString(R.string.no_data));
+            return;
+        }
+
+        getSupportActionBar().setTitle(mMovies.getTitle());
+
 
         //Get a reference to the Recycler View and set the adapter to it
         RecyclerView trailerRecyclerView = findViewById(R.id.trailers_rv_detail);
@@ -117,7 +121,7 @@ public class DetailActivity extends AppCompatActivity
             public void run() {
                 final FavouriteMovies favouriteMovies = mDb.moviesDao()
                         .loadMoviesById(Integer.parseInt(mMovies.getId()));
-                newFavourite(favouriteMovies != null);
+                newFavourite((favouriteMovies != null) ? true : false);
             }
         });
 
@@ -173,9 +177,9 @@ public class DetailActivity extends AppCompatActivity
     //Helper method to set the details to their respective views by parsing the JSON from the API
     private void setDetails() {
         mTitleTv.setText(mMovies.getTitle());
-        mRatingTv.setText(mMovies.getVote());
+        mRatingTv.setText(getString(R.string.rating) + "\n" + mMovies.getVote());
         mPlotTv.setText(mMovies.getPlot());
-        mReleasedTv.setText(mMovies.getReleaseDate());
+        mReleasedTv.setText(getString(R.string.released_on) + "\n" + mMovies.getReleaseDate());
 
         mFavouriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,9 +187,9 @@ public class DetailActivity extends AppCompatActivity
                 final FavouriteMovies favouriteMovies = new FavouriteMovies(
                         Integer.parseInt(mMovies.getId()),
                         mMovies.getTitle(),
-                        mMovies.getPopularity(),
-                        mMovies.getVote(),
                         mMovies.getPlot(),
+                        mMovies.getVote(),
+                        mMovies.getPopularity(),
                         mMovies.getImageUrl(),
                         mMovies.getReleaseDate()
                 );
@@ -210,14 +214,14 @@ public class DetailActivity extends AppCompatActivity
 
         mTrailersAdapter.setTrailerData(mTrailers);
 
-        ((TextView) findViewById(R.id.reviews_tv_detail)).setText("");
+        mReviewTv.setText("");
         for (int i = 0; i < mReviews.size(); i++) {
             mReviewTv.append("\n");
             mReviewTv.append(mReviews.get(i).getContent());
             mReviewTv.append("\n\n");
-            mReviewTv.append(getString(R.string.reviewed_by));
+            mReviewTv.append(getString(R.string.reviewed_by) + " ");
             mReviewTv.append(mReviews.get(i).getAuthor());
-            mReviewTv.append("\n\n--------------\n");
+            mReviewTv.append("\n\n--------------------------------------\n");
         }
 
         String imageUrl = NetworkUtils.buildImageUrl(mMovies.getImageUrl());
@@ -264,19 +268,19 @@ public class DetailActivity extends AppCompatActivity
      * Helper method to download the details of the movie that the user selected in the MainActivity
      */
     public class QueryTask extends AsyncTask<FetchUrl, Void, GetResults> {
-        String title, releaseDate, avgRating, plot, imageUrl;
-        String api_key_label = "?api_key=";
+        String title = mMovies.getTitle();
 
         @Override
         protected GetResults doInBackground(FetchUrl... fetchUrls) {
             URL reviewQuery = fetchUrls[0].reviewUrl;
             URL trailerQuery = fetchUrls[0].trailerUrl;
 
-            String reviews = null, trailers = null;
+            String reviews = null;
+            String trailers = null;
             try {
                 reviews = NetworkUtils.getResponseFromHttpUrl(reviewQuery);
                 mReviews = JsonUtils.parseReviews(reviews);
-                setDetails();
+                Log.d(LOG_TAG, "Reviews Parsed in AsyncTask");
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.e(LOG_TAG, "Unable to fetch/parse reviews");
@@ -285,7 +289,7 @@ public class DetailActivity extends AppCompatActivity
             try {
                 trailers = NetworkUtils.getResponseFromHttpUrl(trailerQuery);
                 mTrailers = JsonUtils.parseTrailers(trailers);
-                setDetails();
+                Log.d(LOG_TAG, "Trailers Parsed in AsyncTask");
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.e(LOG_TAG, "Unable to fetch/parse Trailers");
@@ -305,6 +309,7 @@ public class DetailActivity extends AppCompatActivity
             if (allReviews != null && allReviews.equals("")) {
                 mReviews = JsonUtils.parseReviews(allReviews);
                 setDetails();
+                Log.d(LOG_TAG, "Adding it to the list");
             } else {
                 if (!isConnected()) {
 
@@ -314,10 +319,11 @@ public class DetailActivity extends AppCompatActivity
                 } else {
 
                     mErrorMessage.setVisibility(View.GONE);
-                    if (getSupportActionBar() != null) {
-                        getSupportActionBar().setTitle(title);
-                    }
 
+                }
+
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(title);
                 }
             }
         }

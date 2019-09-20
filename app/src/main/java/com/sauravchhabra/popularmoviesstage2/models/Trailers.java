@@ -14,12 +14,11 @@ public class Trailers {
     private String mName;
     private String mKey;
     private String mUrl;
-    private Context context;
 
     public Trailers(String name, String key) {
         mName = name;
         mKey = key;
-        mUrl = context.getString(R.string.base_url_trailers) + key;
+        mUrl = "https://www.youtube.com/watch?v=" + key;
     }
 
     //Public getters

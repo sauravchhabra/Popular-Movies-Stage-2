@@ -36,7 +36,7 @@ public class JsonUtils {
 
                 movies = new Movies(
                         currentJson.optString("id", "NA"),
-                        currentJson.optString("original_title", "NA"),
+                        currentJson.optString("title", "NA"),
                         currentJson.optString("overview", "NA"),
                         currentJson.optString("vote_average", "NA"),
                         currentJson.optString("popularity", "NA"),
@@ -73,10 +73,9 @@ public class JsonUtils {
                 JSONObject currentJson = new JSONObject(currentReview);
 
                 reviews = new Reviews(
+                        currentJson.optString("id", "NA"),
                         currentJson.optString("author", "NA"),
-                        currentJson.optString("content", "NA"),
-                        currentJson.optString("id", "NA")
-                );
+                        currentJson.optString("content", "NA"));
                 reviewsArrayList.add(reviews);
             }
             Log.d(LOG_TAG, "Reviews added successfully");
@@ -102,13 +101,13 @@ public class JsonUtils {
 
             ArrayList<Trailers> trailersArrayList = new ArrayList<>();
             for (int i = 0; i < jsonArray.length(); i++) {
-                String currentTrailer = jsonArray.optString(i, "No content Available");
+                String currentTrailer = jsonArray.optString(i, "");
                 JSONObject currentJson = new JSONObject(currentTrailer);
 
                 trailers = new Trailers(
-                        currentJson.optString("key", "NA"),
-                        currentJson.optString("name", "NA")
-                );
+                        currentJson.optString("name", "Not Available"),
+                        currentJson.optString("key", "Not Available"));
+
                 trailersArrayList.add(trailers);
             }
             Log.d(LOG_TAG, "Trailers added successfully");
