@@ -55,14 +55,14 @@ public class DetailActivity extends AppCompatActivity
     private TextView mReviewTv, mTitleTv, mRatingTv, mPlotTv, mReleasedTv;
     private ImageView mPosterIv;
 
-    // Helper method to check if device has an active internet connection
-    private boolean isConnected() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(
-                Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnectedOrConnecting();
-    }
+//    // Helper method to check if device has an active internet connection
+//    private boolean isConnected() {
+//        ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(
+//                Context.CONNECTIVITY_SERVICE);
+//
+//        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+//        return networkInfo != null && networkInfo.isConnectedOrConnecting();
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +121,7 @@ public class DetailActivity extends AppCompatActivity
             public void run() {
                 final FavouriteMovies favouriteMovies = mDb.moviesDao()
                         .loadMoviesById(Integer.parseInt(mMovies.getId()));
-                newFavourite((favouriteMovies != null) ? true : false);
+                newFavourite(favouriteMovies != null);
             }
         });
 
@@ -306,25 +306,16 @@ public class DetailActivity extends AppCompatActivity
             mErrorMessage.setVisibility(View.GONE);
 
             // Set the text to the downloaded JSON of the current movie
-            if (allReviews != null && allReviews.equals("")) {
+//            if (allReviews != null && allReviews.equals("")) {
                 mReviews = JsonUtils.parseReviews(allReviews);
                 setDetails();
                 Log.d(LOG_TAG, "Adding it to the list");
-            } else {
-                if (!isConnected()) {
-
-                    //If device has no connection, then change the error message to current string
-                    mErrorMessage.setVisibility(View.VISIBLE);
-                    mErrorMessage.setText(R.string.no_connection);
-                } else {
-
-                    mErrorMessage.setVisibility(View.GONE);
-
-                }
+//            } else {
+//
 
                 if (getSupportActionBar() != null) {
                     getSupportActionBar().setTitle(title);
-                }
+//                }
             }
         }
     }
