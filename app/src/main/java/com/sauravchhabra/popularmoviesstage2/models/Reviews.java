@@ -10,11 +10,13 @@ public class Reviews {
     private String mAuthor;
     private String mContent;
     private String mId;
+    private String mUrl;
 
-    public Reviews(String id, String author, String content) {
+    public Reviews(String id, String author, String content, String url) {
         mAuthor = author;
         mContent = content;
         mId = id;
+        mUrl = url;
     }
 
     //Public getters
@@ -28,5 +30,9 @@ public class Reviews {
 
     public String getContent() {
         return mContent;
+    }
+
+    public String getUrl(){
+        return mUrl;
     }
 }

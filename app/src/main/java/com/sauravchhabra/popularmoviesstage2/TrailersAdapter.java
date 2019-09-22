@@ -40,7 +40,7 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Traile
 
     @NonNull
     @Override
-    public TrailerViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public TrailersAdapter.TrailerViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         Context context = viewGroup.getContext();
         int itemId = R.layout.trailer_item;
         LayoutInflater inflater = LayoutInflater.from(context);

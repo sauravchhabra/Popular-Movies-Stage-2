@@ -9,12 +9,15 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -63,8 +66,32 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Lis
 
     private TextView mEmptyView;
     private static final String LOG_TAG = MainActivity.class.getName();
+    private static final String KEY_INSTANCE_STATE_RV_POSITION = "saveView";
+
+    private GridLayoutManager mLayoutManager;
+    private Parcelable mSavedRecyclerLayoutState;
+    private RecyclerView mRecyclerView;
+
 
     int mSelected = 0;
+
+    //Helper method to save the user state across the change in device configuration
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(KEY_INSTANCE_STATE_RV_POSITION, mLayoutManager.onSaveInstanceState());
+    }
+
+    @Override
+    public void onRestoreInstanceState(@NonNull Bundle savedInstanceState){
+        super.onRestoreInstanceState(savedInstanceState);
+
+        if(savedInstanceState != null)
+        {
+            mSavedRecyclerLayoutState = savedInstanceState.getParcelable(KEY_INSTANCE_STATE_RV_POSITION);
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -77,69 +104,69 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Lis
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
+        final SharedPreferences.Editor editor = mSharedPreferences.edit();
+        final SharedPreferences.Editor actionBarNameEditor = mSharedPreferences.edit();
         //If the Settings option is tapped, then show the user with an Alert Dialog
         //to choose their preference from the list which will then update the activity
         //if user changes their preference
-        if (id == R.id.action_settings) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            final SharedPreferences.Editor editor = mSharedPreferences.edit();
-            final SharedPreferences.Editor actionBarNameEditor = mSharedPreferences.edit();
-            mSort_by = mSharedPreferences.getString(SORT_BY, SORT_POPULAR);
-            if (mSort_by != null && mSort_by.equals(SORT_POPULAR))
-                mSelected = 0;
-            else if (mSort_by != null && mSort_by.equals(SORT_TOP_RATED))
-                mSelected = 1;
-            else if (mSort_by != null && mSort_by.equals(SORT_FAVORITE))
-                mSelected = 2;
-
-            builder.setTitle("Sort by:");
-            builder.setSingleChoiceItems(R.array.sort_types, mSelected,
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (which == 0) {
-                                mSort_by = SORT_POPULAR;
-                                mActionBarName = POPULAR;
-                                editor.putString(SORT_BY, SORT_POPULAR);
-                                actionBarNameEditor.putString(ACTION_BAR_TITLE, POPULAR);
-                            } else if (which == 1) {
-                                mSort_by = SORT_TOP_RATED;
-                                mActionBarName = TOP_RATED;
-                                editor.putString(SORT_BY, SORT_TOP_RATED);
-                                actionBarNameEditor.putString(ACTION_BAR_TITLE, TOP_RATED);
-                            } else if (which == 2) {
-                                mSort_by = SORT_FAVORITE;
-                                mActionBarName = FAVOURITES;
-                                editor.putString(SORT_BY, SORT_FAVORITE);
-                                actionBarNameEditor.putString(ACTION_BAR_TITLE, FAVOURITES);
-                            }
-                        }
-                    });
-            builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    //If user clicked Save then apply the changes to SharedPreference
-                    editor.apply();
-                    actionBarNameEditor.apply();
-
-                    //Change the name of the action bar after user clicks save
-                    if (getSupportActionBar() != null) {
-                        getSupportActionBar().setTitle(mActionBarName);
-                    }
-                    //After saving, refresh the activity
-                    clearMovieList();
-                    loadMovies();
-                }
-            });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    //Do nothing, since user clicked cancel
-                }
-            });
-            AlertDialog dialog = builder.create();
-            dialog.show();
+        if (id == R.id.action_sort_popular && !mSort_by.equals(SORT_POPULAR)) {
+            clearMovieList();
+            mSort_by = SORT_POPULAR;
+            mActionBarName = POPULAR;
+            editor.putString(SORT_BY, SORT_POPULAR);
+            actionBarNameEditor.putString(ACTION_BAR_TITLE, POPULAR);
+            loadMovies();
+            mSelected = 0;
+            editor.apply();
+            actionBarNameEditor.apply();
+            setTitleBarName(mActionBarName);
+            return true;
+        }
+        if (id == R.id.action_sort_top_rated && !mSort_by.equals(SORT_TOP_RATED)) {
+            clearMovieList();
+            mSort_by = SORT_TOP_RATED;
+            mActionBarName = TOP_RATED;
+            editor.putString(SORT_BY, SORT_TOP_RATED);
+            actionBarNameEditor.putString(ACTION_BAR_TITLE, TOP_RATED);
+            loadMovies();
+            mSelected = 1;
+            editor.apply();
+            actionBarNameEditor.apply();
+            setTitleBarName(mActionBarName);
+            return true;
+        }
+        if (id == R.id.action_sort_favorite && !mSort_by.equals(SORT_FAVORITE)) {
+            clearMovieList();
+            mSort_by = SORT_FAVORITE;
+            mActionBarName = FAVOURITES;
+            editor.putString(SORT_BY, SORT_FAVORITE);
+            actionBarNameEditor.putString(ACTION_BAR_TITLE, FAVOURITES);
+            loadMovies();
+            mSelected = 2;
+            editor.apply();
+            actionBarNameEditor.apply();
+            setTitleBarName(mActionBarName);
+            return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    //Helper method to change the name of the action bar after user selects the option
+    public void setTitleBarName(String titleBarName){
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(titleBarName);
+        }
+    }
+
+    //Helper method to calculate the number of columns
+    public static int calculateNoOfColumns(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        int scalingFactor = 200;
+        int noOfColumns = (int) (dpWidth / scalingFactor);
+        if (noOfColumns < 2)
+            noOfColumns = 2;
+        return noOfColumns;
     }
 
 
@@ -150,16 +177,17 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Lis
         mEmptyView = findViewById(R.id.tv_error_message);
         progressBar = findViewById(R.id.pb_indicator);
         progressBar.setVisibility(View.VISIBLE);
-        RecyclerView recyclerView = findViewById(R.id.main_rv);
+        mRecyclerView = findViewById(R.id.main_rv);
 
 
         //Set the recycler view to use grid layout
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
-        recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.setHasFixedSize(true);
+        mLayoutManager = new GridLayoutManager(this, calculateNoOfColumns(this));
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setHasFixedSize(true);
 
         mMoviesAdapter = new MoviesAdapter(mMovies, this, this);
-        recyclerView.setAdapter(mMoviesAdapter);
+        mRecyclerView.setAdapter(mMoviesAdapter);
+
 
         // Get the saved preferences
         mSharedPreferences = getSharedPreferences("popular_movies", MODE_PRIVATE);
@@ -276,12 +304,14 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Lis
             mEmptyView.setVisibility(View.GONE);
 
             //If device has no connection, then change the error message to current string
-            if (!isConnected()) {
-                mEmptyView.setVisibility(View.VISIBLE);
-                mEmptyView.setText(R.string.no_connection);
-            } else if (results != null && !results.equals("")) {
+            if (results != null) {
                 mMovies = JsonUtils.parseMovies(results);
                 mMoviesAdapter.setMovieData(mMovies);
+                if (mSavedRecyclerLayoutState != null)
+                mLayoutManager.onRestoreInstanceState(mSavedRecyclerLayoutState);
+            } else {
+                mEmptyView.setVisibility(View.VISIBLE);
+                mEmptyView.setText(R.string.no_connection);
             }
         }
     }

@@ -14,10 +14,12 @@ public class Trailers {
     private String mName;
     private String mKey;
     private String mUrl;
+    private String mSite;
 
-    public Trailers(String name, String key) {
+    public Trailers(String name, String key, String site) {
         mName = name;
         mKey = key;
+        mSite = site;
         mUrl = "https://www.youtube.com/watch?v=" + key;
     }
 
@@ -32,5 +34,9 @@ public class Trailers {
 
     public String getUrl() {
         return mUrl;
+    }
+
+    public String getSite(){
+        return mSite;
     }
 }

@@ -8,7 +8,7 @@ import android.content.Context;
 /**
  * Database Class to create a table where all the data will be stored locally
  */
-@Database(entities = {FavouriteMovies.class}, version = 1, exportSchema = false)
+@Database(entities = {FavouriteMovies.class}, version = 2, exportSchema = false)
 public abstract class MoviesDatabase extends RoomDatabase {
 
     private static final Object SINGLETON = new Object();

@@ -6,6 +6,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +32,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -54,6 +58,8 @@ public class DetailActivity extends AppCompatActivity
     private TextView mErrorMessage;
     private TextView mReviewTv, mTitleTv, mRatingTv, mPlotTv, mReleasedTv;
     private ImageView mPosterIv;
+    private ScrollView mScrollView;
+    private static final String SAVED_INSTANCE = "saved_state";
 
 //    // Helper method to check if device has an active internet connection
 //    private boolean isConnected() {
@@ -64,12 +70,34 @@ public class DetailActivity extends AppCompatActivity
 //        return networkInfo != null && networkInfo.isConnectedOrConnecting();
 //    }
 
+    //Helper method to save the user state across the change in device configuration
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putIntArray("ARTICLE_SCROLL_POSITION",
+                new int[]{ mScrollView.getScrollX(), mScrollView.getScrollY()});
+    }
+
+    @Override
+    public void onRestoreInstanceState(@NonNull Bundle savedInstanceState){
+        super.onRestoreInstanceState(savedInstanceState);
+
+        final int[] position = savedInstanceState.getIntArray("ARTICLE_SCROLL_POSITION");
+        if(position != null)
+            mScrollView.post(new Runnable() {
+                public void run() {
+                    mScrollView.scrollTo(position[0], position[1]);
+                }
+            });
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
         //Reference to the views in the layout
+        mScrollView = findViewById(R.id.scroll_view_detail);
         mProgressbar = findViewById(R.id.pb_loading_indicator_detail);
         mFavouriteButton = findViewById(R.id.favourite_ib_detail);
         mErrorMessage = findViewById(R.id.tv_error_message_display_detail);
@@ -121,7 +149,7 @@ public class DetailActivity extends AppCompatActivity
             public void run() {
                 final FavouriteMovies favouriteMovies = mDb.moviesDao()
                         .loadMoviesById(Integer.parseInt(mMovies.getId()));
-                newFavourite(favouriteMovies != null);
+                newFavourite((favouriteMovies != null)? true : false);
             }
         });
 
@@ -306,16 +334,14 @@ public class DetailActivity extends AppCompatActivity
             mErrorMessage.setVisibility(View.GONE);
 
             // Set the text to the downloaded JSON of the current movie
-//            if (allReviews != null && allReviews.equals("")) {
+            if (allReviews!=null && !allReviews.equals("")) {
                 mReviews = JsonUtils.parseReviews(allReviews);
                 setDetails();
                 Log.d(LOG_TAG, "Adding it to the list");
-//            } else {
-//
+            }
 
                 if (getSupportActionBar() != null) {
                     getSupportActionBar().setTitle(title);
-//                }
             }
         }
     }

@@ -75,7 +75,8 @@ public class JsonUtils {
                 reviews = new Reviews(
                         currentJson.optString("id", "NA"),
                         currentJson.optString("author", "NA"),
-                        currentJson.optString("content", "NA"));
+                        currentJson.optString("content", "NA"),
+                        currentJson.optString("url", "NA"));
                 reviewsArrayList.add(reviews);
             }
             Log.d(LOG_TAG, "Reviews added successfully");
@@ -105,8 +106,9 @@ public class JsonUtils {
                 JSONObject currentJson = new JSONObject(currentTrailer);
 
                 trailers = new Trailers(
-                        currentJson.optString("name", "Not Available"),
-                        currentJson.optString("key", "Not Available"));
+                        currentJson.optString("name", "NA"),
+                        currentJson.optString("key", "NA"),
+                        currentJson.optString("site", "NA"));
 
                 trailersArrayList.add(trailers);
             }

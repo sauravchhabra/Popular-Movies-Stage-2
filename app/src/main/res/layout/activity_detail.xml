@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".DetailActivity">
+    tools:context=".DetailActivity"
+    android:id="@+id/scroll_view_detail">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
